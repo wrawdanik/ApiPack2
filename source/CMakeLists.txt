@@ -19,7 +19,7 @@ file(
 )
 
 
-add_executable(ApiPack2 ${SOURCES} memorystore/CacheStatistics.h)
+add_executable(ApiPack2 ${SOURCES} )
 
 link_directories(/usr/lib/)
 include_directories(/usr/include/postgresql/)
