@@ -101,7 +101,7 @@ def handleSchedules(exportedIds,connection,daysBack,daysForward):
 
     print "processing schedules for "+str(len(exportedIds["metamorphosis.station"]))+" stations from "+str(requestStartDate)+" to "+str(requestEndDate)+" ..."
     
-    chunkedIds=chunkedList(list(exportedIds["metamorphosis.station"]),100)
+    chunkedIds=chunkedList(list(exportedIds["metamorphosis.station"]),1000)
     for idList in chunkedIds:
 	cursor = connection.cursor()	
 	sqlCommand="SELECT  schedule_day_id,thrift FROM catapult.schedule_day where day>=? and day<? "
@@ -241,7 +241,7 @@ def handleStations(exportedIds,connection):
   
     print "processing "+str(len(exportedIds["metamorphosis.station"]))+" stations ..."
   
-    chunkedIds=chunkedList(list(exportedIds["metamorphosis.station"]),512)
+    chunkedIds=chunkedList(list(exportedIds["metamorphosis.station"]),1000)
     for idList in chunkedIds:
 	cursor = connection.cursor()	
 	sqlCommand="SELECT  id,thrift FROM catapult.general where topic='metamorphosis.station'"
@@ -266,7 +266,7 @@ def handlePerson(exportedIds,connection):
     personCount=0
     totalByteSize=0
 
-    chunkedIds=chunkedList(list(exportedIds["metamorphosis.person"]),512)
+    chunkedIds=chunkedList(list(exportedIds["metamorphosis.person"]),1000)
     for idList in chunkedIds:
 	cursor = connection.cursor()	
 	sqlCommand="SELECT  id,thrift FROM catapult.general where topic='metamorphosis.person'"
@@ -301,7 +301,7 @@ def handlePrograms(exportedIds,connection):
     programCount=0
     initialProgramCount=len(exportedIds["metamorphosis.program.tmsId"])
 
-    chunkedIds=chunkedList(list(exportedIds["metamorphosis.program.tmsId"]),512)
+    chunkedIds=chunkedList(list(exportedIds["metamorphosis.program.tmsId"]),1000)
     for idList in chunkedIds:
         cursor = connection.cursor()	
         sqlCommand="SELECT  id,thrift FROM catapult.general where topic='metamorphosis.program.tmsId'"

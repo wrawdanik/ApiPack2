@@ -14,13 +14,18 @@
 #include <proxygen/httpserver/RequestHandlerFactory.h>
 #include <unistd.h>
 
-#include "ApiPack2HandlerFactory.h"
+#include "IOHandlerFactory.h"
+
+
+#include "blockingconcurrentqueue.h"
+#include "LogicHandler.h"
 
 using namespace ApiPack2;
 using namespace proxygen;
+using namespace moodycamel;
 
 DEFINE_int32(http_port, 8080, "Port to listen on with HTTP protocol");
-DEFINE_string(ip, "localhost", "IP/Hostname to bind to");
+DEFINE_string(ip, "172.16.0.119", "IP/Hostname to bind to");
 DEFINE_int32(threads, 0, "Number of threads to listen on. Numbers <= 0 "
              "will use the number of cores on this machine.");
 
@@ -35,11 +40,14 @@ int main(int argc, char **argv)
     google::InitGoogleLogging(argv[0]);
     google::InstallFailureSignalHandler();
 
+
     LOG(INFO) << "ApiPack2 started with 4 threads .... ";
 
     std::vector<HTTPServer::IPConfig> IPs = {
             {SocketAddress(FLAGS_ip, FLAGS_http_port, true), HTTPServer::Protocol::HTTP}
     };
+
+    BlockingConcurrentQueue<LogicHandlerRequest> *queue=new BlockingConcurrentQueue<LogicHandlerRequest>(256);
 
 
     HTTPServerOptions options;
@@ -48,8 +56,20 @@ int main(int argc, char **argv)
     options.shutdownOn = {SIGINT, SIGTERM};
     options.enableContentCompression = false;
     options.handlerFactories = RequestHandlerChain()
-            .addThen<ApiPack2HandlerFactory>()
+            .addThen<IOHandlerFactory>(queue)
             .build();
+
+    LogicHandler *mHandler1=new LogicHandler(queue);
+    mHandler1->start();
+
+    LogicHandler *mHandler2=new LogicHandler(queue);
+    mHandler2->start();
+
+    LogicHandler *mHandler3=new LogicHandler(queue);
+    mHandler3->start();
+
+    LogicHandler *mHandler4=new LogicHandler(queue);
+    mHandler4->start();
 
     HTTPServer server(std::move(options));
     server.bind(IPs);
@@ -60,6 +80,14 @@ int main(int argc, char **argv)
     });
 
     t.join();
+
+    delete mHandler1;
+    delete mHandler2;
+    delete mHandler3;
+    delete mHandler4;
+
+    LOG(INFO) << "ApiPack2 finished .... ";
+
     return 0;
 
 }

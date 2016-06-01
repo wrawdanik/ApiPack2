@@ -8,9 +8,13 @@
 #endif //APIPACK2_THRIFTMODELOPERATORS_H_H
 
 
-#include "station_types.h"
-#include "merckx_types.h"
-#include "team_types.h"
+#include "core/station_types.h"
+#include "merckx/merckx_types.h"
+#include "core/team_types.h"
+
+/*
+ *  That's what happens when you define Set based data in Thrift ...
+ */
 
 
 

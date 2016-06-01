@@ -17,8 +17,14 @@ namespace ApiPack2
     {
     public:
 
-        long version;
-        //public TBase *data;
+        DataObject()
+        {
+            sizeInBytes=0;
+            thriftObject= nullptr;
+        }
+
+        size_t sizeInBytes;
+        unsigned char *thriftObject;
     };
 
 

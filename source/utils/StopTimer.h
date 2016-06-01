@@ -40,7 +40,7 @@ namespace ApiPack2
         inline ElapsedTime	elapsedTime() const
         {
             auto elapsed=HighResClock::now() - mPrevValue;
-            return rde::make_pair(chrono::duration_cast<chrono::duration<uint64_t,std::milli>>(elapsed).count(),(chrono::duration_cast<chrono::duration<float,std::milli>>(elapsed).count())/1000.0f);
+            return std::make_pair(chrono::duration_cast<chrono::duration<uint64_t,std::milli>>(elapsed).count(),(chrono::duration_cast<chrono::duration<float,std::milli>>(elapsed).count())/1000.0f);
         }
 
         static void sleep(size_t millis)

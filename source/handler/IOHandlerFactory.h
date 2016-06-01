@@ -6,6 +6,8 @@
 #define APIPACK2_APIPACK2HANDLERFACTORY_H
 
 #include <proxygen/httpserver/RequestHandlerFactory.h>
+#include "blockingconcurrentqueue.h"
+#include "LogicHandlerRequest.h"
 
 using namespace proxygen;
 
@@ -13,9 +15,11 @@ using namespace proxygen;
 namespace ApiPack2
 {
 
-    class ApiPack2HandlerFactory : public RequestHandlerFactory
+    class IOHandlerFactory : public RequestHandlerFactory
     {
     public:
+
+        IOHandlerFactory(moodycamel::BlockingConcurrentQueue<LogicHandlerRequest> *queue);
 
         void onServerStart(folly::EventBase *evb) noexcept override;
 
@@ -23,6 +27,9 @@ namespace ApiPack2
 
         RequestHandler *onRequest(RequestHandler *, HTTPMessage *) noexcept override;
 
+    private:
+        folly::EventBase *mEventBase;
+        moodycamel::BlockingConcurrentQueue<LogicHandlerRequest> *mQueue;
     };
 
 }

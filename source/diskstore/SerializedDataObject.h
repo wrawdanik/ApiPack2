@@ -6,8 +6,8 @@
 #define APIPACK2_SERIALIZEDDATAOBJECT_H
 #include <string>
 #include <vector>
-#include "Topics.h"
-#include "DatastoreIterator.h"
+#include "../datastore/Topics.h"
+#include "../datastore/DatastoreIterator.h"
 
 namespace ApiPack2
 {
@@ -25,7 +25,6 @@ namespace ApiPack2
 
         DataObject* next();
 
-
     };
 
 
@@ -34,23 +33,14 @@ namespace ApiPack2
     {
     public:
 
-        struct Header
-        {
-            std::string fileName;
-            Topic topic;
-            long offset;
-            std::string &date;
-        };
 
-        SerializedDataObject(const std::string &filePath);
+        SerializedDataObject(const std::string &filePath,Topic topic);
 
-        void beginSerialize(Header header);
+        void beginSerialize();
 
         void serialize(DataObjectArray &array);
 
         void endSerialize();
-
-        Header beginDeserialize();
 
         SerializedDataObjectIterator deserialize();
 
